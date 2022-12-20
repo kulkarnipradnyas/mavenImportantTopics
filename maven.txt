@@ -1,0 +1,282 @@
+1.Which goal is used to create maven project?
+-> mvn archetype:generate -DgroupId=com.kulkarni -DartifactId=helloMaven -DarcheTypeArtifactId=maven-archetype-quickstart -DinteractMode=false
+
+2.How to solve error "Failed to execute goal" on "maven-compiler-plugin"?
+-> set a compiler source and target 
+
+3.How to set compiler source and target?
+-> <properties> 
+    <maven.compiler.source>${maven.java.version}</maven.compiler.source>
+    <maven.compiler.target>${maven.java.version}</maven.compiler.target>
+  </properties>
+
+4.How can you move jar of 1 project into another project?
+-> java -cp target/${name}.jar com.kulkarni(another package name)
+
+5.How Life cycle phase works?
+-> the step and steps above that step executes.Ex: process-resources -> compile -> test -> package(goals associate to it (jar:jar,war:war))
+
+6.which are maven coordinates?
+-> 1.groupId 2.artifactId 3.version 4.packaging
+
+7.How naming convention works?
+-> groupId(com.oracle) artifactId(helloMaven) version(When unreleased:helloMaven-1.0.SNAPSHOT.jar  release: helloMaven-1.0) packaging(jar/war)
+it effectively looks like groupId:artifactId:packaging:version
+
+8.When we do maven Install what is the default location from where it gets installed?
+-> https://repo.maven.apache.org/maven2/
+
+9.Where can you find all repositories on local?
+-> .m2/repository(you can delete whenever there is syncing problem of version)
+
+10.Which maven plugin do we use when we create a maven project
+-> archetype
+
+11.Which of the following represents the type of maven project we want to create
+-> archetypeArtifactId
+
+12.How to skip test cases?
+-> maven install -DskipTests
+
+13.What is the archtypeId to create a maven java web project?
+-> maven-archetype-webapp
+
+14.How to create multi Module Project?
+-> parent(pom) 
+  1.Make <packaging>pom</packaging> and <version>0.0.1-SNAPSHOT</version>
+  2.child1(pom) and child2(pom) are children
+  2.Add to parent <modules> 
+                    <module>child1<module>
+                    <module>child2<module>
+                 <modules>
+  3.In children child1 and child2 do below, packaging will be jar/war: 
+  <parent>
+    <groupId>com.oracle</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0</version>
+   </parent>   
+  4.Now from parent run mvn clean install.It build all 3 projects.
+
+15.How to solve error "can not access default fields for properties"?
+  -> latest maven does have below plugin hence add it
+  <build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<version>3.3.2</version>
+		</plugin>
+	</plugins>
+   </build> 
+
+16.How many Maven scopes are there?
+-> 1.compile 2.runtime 3.provided 4.test 5.system 6.import
+
+17.What is by default scope used by maven?
+-> compile scope.this will be available in build, test, run.
+
+18.What is provided scope?
+-> libraries which needs to be there in test and run but not in jar/war(build) (eg: servlet-api,devtool for local development)
+
+19.What is runtime scope?
+-> it will be available in run and test but not in jar/war(build).
+
+20.What is test scope?
+-> This required in compile and run test.(eg: junit)
+
+21.What is system scope?
+-> you point a library which is not maven dependency then it comes under system scope.<systemPath>${baseDir}\war\WEB_INF\lib\extDependency.jar
+
+22.What is import scope?
+-> It is used in pom based project not jar and war based projects.
+
+23.When working on multiple project how will you ensure all libraries used working on same version?
+-> In parent project mention below.We still have to add dependency in child pom but not the version.
+ ```<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.4</version> // version can be added through properties too as a best practice.
+			</dependency>
+		</dependencies>
+	</dependencyManagement> ```
+
+
+24.When working on multiple project how will you ensure all plugin used, working on same version? 
+-> In parent project mention below.We still have to add plugin in child pom but not the version.
+``` <pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.2</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>```
+
+25.How to create profiles?
+-> 1.create below structure in src/main/profiles/
+   - prod 
+      - application.properties
+   - dev 
+      - application.properties
+   - test 
+      - application.properties  
+
+    2.all can have respective information like db.url, db.password etc.
+    3.crete below for all envs:
+     <profiles>
+        <profile>
+           <id>dev>/dev>
+           <properties> 
+              <build.profile.id>dev</build.profile.id>
+           </properties> 
+           <build>
+                <resources>
+                    <resource>
+                        <directory>${project.basedir}</directory>
+                        <targetPath>META-INF</targetPath>
+                    </resource>
+                    <resource>
+                        <directory>${project.basedir}/src/main/profiles</directory>
+                    </resource>
+                </resources>
+            </build>
+        <profile>       
+     <profiles>
+    4.Now go to settings-> maven -> profile -> mention env(eg:dev) 
+    5.command line: maven install -pdev
+
+26.How to generate sonar report?
+-> 1.use jacoco plugin 
+``` <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.7</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>prepare-agent</goal>
+                </goals>
+            </execution>
+            <execution>
+                <id>report</id>
+                <phase>test</phase>
+                <goals>
+                    <goal>report</goal>
+                </goals>
+            </execution>
+        </executions>
+   </plugin> ```   
+   2.Do "maven clean verify" it will generate report.
+   3.Go to target/site/jacoco/index.html
+
+27.How to activate sonar plugin?
+``` <settings>
+    <pluginGroups>
+        <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+    </pluginGroups>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+     </profiles>
+</settings> ```
+Run mvn clean verify sonar:sonar -Dsonar.login=Token
+
+28.Repository manager
+-> nexus manager(company can have their own enterprise edition)
+
+29.What are the Settings to pull the repositories?
+-> 
+ <repositories>
+  <repository>
+    <id>${COMPANY_REPO_ID}</id>
+    <name>COMPANY Artifactory</name>
+    <url>${COMPANY_INTERNAL_REPO_URL}</url>
+   </repository>
+ <repositories>
+
+30.Where to mention released or snapshot jar settings?
+ ``` <distributionManagement>
+        <repository>
+            <id>${COMPANY_REPO_ID}</id>
+            <name>COMPANY Artifactory</name>
+            <url>${COMPANY_INTERNAL_REPO_URL}</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <id>${COMPANY_INTERNAL_REPO_ID}</id>
+            <name>COMPANY Artifactory</name>
+            <url>${COMPANY_INTERNAL_REPO_URL}</url>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement> ```
+
+31.What all types of repository?
+-> 1.hosted(maven releases and maven snapshots) 2.proxy(maven central) 3.group(maven public)[it can be combination of any eg maven snapshot, releases, central]
+
+32.What is the use of setting.xml?
+-> it will be in path .m2/setting.xml.All settings will be kept here.It will have authentication related information to connect to companies repository manager.
+<servers>
+        <server>
+            <id>company-name-environment</id>
+            <username>username-of-companies-repository-manager</username>
+            <password>password-of-companies-repository-manager</password>
+        </server>
+ </servers>
+
+33.What are mirrors?
+-> Its mirror of central repository to fetch repos.Even if we removed  <repositories> tag from pom, repos will be fetched from below configuration.
+   <mirrors>
+        <mirror>
+            <id>maven_remote_repos</id>
+            <mirrorOf>central</mirrorOf>
+            <name>Local proxy of external Maven repos</name>
+            <url>company-hosted-url/artifactory/maven_remote_repos</url>
+        </mirror>
+    </mirrors>
+
+34.How maven deploy works?
+-> When we do mvn deploy, it will get deployed to repo mentioned in distributionManagement.
+ ``` <distributionManagement>
+        <repository>
+            <id>${COMPANY_REPO_ID}</id>
+            <name>COMPANY Artifactory</name>
+            <url>${COMPANY_INTERNAL_REPO_URL}</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <id>${COMPANY_INTERNAL_REPO_ID}</id>
+            <name>COMPANY Artifactory</name>
+            <url>${COMPANY_INTERNAL_REPO_URL}</url>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement> ```
+
+35.Java system property List.
+-> https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
+
+36.How to write custom properties and use it?
+-> <properties>
+        <slf4j.api.version>1.7.36</slf4j.api.version>
+  </properties>
+   <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.api.version}</version>
+  </dependency>
+
+  37. maven ant plugin use?
+  -> using that you can see all properties with system properties.
+
+
