@@ -93,7 +93,7 @@ it effectively looks like groupId:artifactId:packaging:version
 
 23.When working on multiple project how will you ensure all libraries used working on same version?
 -> In parent project mention below.We still have to add dependency in child pom but not the version.
- ```<dependencyManagement>
+ <dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>junit</groupId>
@@ -101,12 +101,12 @@ it effectively looks like groupId:artifactId:packaging:version
 				<version>4.4</version> // version can be added through properties too as a best practice.
 			</dependency>
 		</dependencies>
-	</dependencyManagement> ```
+</dependencyManagement>
 
 
 24.When working on multiple project how will you ensure all plugin used, working on same version? 
 -> In parent project mention below.We still have to add plugin in child pom but not the version.
-``` <pluginManagement>
+ <pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -119,7 +119,7 @@ it effectively looks like groupId:artifactId:packaging:version
 				</plugin>
 
 			</plugins>
-		</pluginManagement>```
+</pluginManagement>
 
 25.How to create profiles?
 -> 1.create below structure in src/main/profiles/
@@ -156,7 +156,7 @@ it effectively looks like groupId:artifactId:packaging:version
 
 26.How to generate sonar report?
 -> 1.use jacoco plugin 
-``` <plugin>
+ <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.7</version>
@@ -174,12 +174,12 @@ it effectively looks like groupId:artifactId:packaging:version
                 </goals>
             </execution>
         </executions>
-   </plugin> ```   
+   </plugin>  
    2.Do "maven clean verify" it will generate report.
    3.Go to target/site/jacoco/index.html
 
 27.How to activate sonar plugin?
-``` <settings>
+<settings>
     <pluginGroups>
         <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
     </pluginGroups>
@@ -191,7 +191,7 @@ it effectively looks like groupId:artifactId:packaging:version
             </activation>
         </profile>
      </profiles>
-</settings> ```
+</settings>
 Run mvn clean verify sonar:sonar -Dsonar.login=Token
 
 28.Repository manager
@@ -208,7 +208,7 @@ Run mvn clean verify sonar:sonar -Dsonar.login=Token
  <repositories>
 
 30.Where to mention released or snapshot jar settings?
- ``` <distributionManagement>
+ <distributionManagement>
         <repository>
             <id>${COMPANY_REPO_ID}</id>
             <name>COMPANY Artifactory</name>
@@ -221,7 +221,7 @@ Run mvn clean verify sonar:sonar -Dsonar.login=Token
             <url>${COMPANY_INTERNAL_REPO_URL}</url>
             <layout>default</layout>
         </snapshotRepository>
-    </distributionManagement> ```
+    </distributionManagement>
 
 31.What all types of repository?
 -> 1.hosted(maven releases and maven snapshots) 2.proxy(maven central) 3.group(maven public)[it can be combination of any eg maven snapshot, releases, central]
@@ -249,7 +249,7 @@ Run mvn clean verify sonar:sonar -Dsonar.login=Token
 
 34.How maven deploy works?
 -> When we do mvn deploy, it will get deployed to repo mentioned in distributionManagement.
- ``` <distributionManagement>
+  <distributionManagement>
         <repository>
             <id>${COMPANY_REPO_ID}</id>
             <name>COMPANY Artifactory</name>
@@ -262,7 +262,7 @@ Run mvn clean verify sonar:sonar -Dsonar.login=Token
             <url>${COMPANY_INTERNAL_REPO_URL}</url>
             <layout>default</layout>
         </snapshotRepository>
-    </distributionManagement> ```
+    </distributionManagement>
 
 35.Java system property List.
 -> https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
